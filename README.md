@@ -1,10 +1,15 @@
 # Timber
 A binary written in PHP based on symfony console to easily create a Timber project.
 
+
 # Installation
 ```bash
 composer global require azi/timber
 ```
+
+
+__Dont't forget to add `$HOME/.composer/vendor/bin` in your path__
+
 # Usage
 ```bash
 timber new blog
