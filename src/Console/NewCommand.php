@@ -109,15 +109,13 @@ class NewCommand extends Command
 
         $this->createApplicationDirectory();
 
-        $output->writeln('<info>Downloading wordpress..</info> this might take a moment');
-
+        $output->writeln('<info>Downloading wordpress..</info> this might take a while');
         $zipFile = $this->download();
-
+        $output->writeln('<info>Extracting package</info>');
         $this->extract($zipFile);
-
+        $output->writeln('<info>Generating wordpress theme & installing timber</info>');
         (new Theme($this->getApp(), $input, $output))->generate();
-
-        $output->writeln("Thanks");
+        $output->writeln('<comment>All done! Build something amazing.</comment>');
     }
 
     /**
