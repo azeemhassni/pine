@@ -1,5 +1,5 @@
 {
-  "name": "timber/installer",
+  "name": "azi/timber",
   "description": "Install timber like artisans",
   "type": "composer-plugin",
   "license": "MIT",
