@@ -1,0 +1,27 @@
+{
+  "name": "timber/installer",
+  "description": "Install timber like artisans",
+  "type": "composer-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Azeem Hassni",
+      "email": "azeemhassni@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Azi\\": "src"
+    }
+  },
+  "require": {
+    "ext-zip": "*",
+    "symfony/console": "^3.2",
+    "guzzlehttp/guzzle": "^6.2",
+    "symfony/process": "^3.2",
+    "symfony/filesystem": "^3.2"
+  },
+  "bin": [
+    "timber"
+  ]
+}

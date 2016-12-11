@@ -1,0 +1,37 @@
+#!/usr/bin/env php
+<?php
+
+if (file_exists(__DIR__ . '/../../autoload.php')) {
+    require __DIR__ . '/../../autoload.php';
+} else {
+    require __DIR__ . '/vendor/autoload.php';
+}
+
+$themeFilesDirectory = __DIR__ . '/templates/';
+
+/**
+ * Register a custom error handler so that we can convert warnings
+ * into exceptions. so that we can provide better feedback
+ */
+set_error_handler(function ( $number, $error, $file, $line, array $context ) {
+    if (error_reporting() === 0) {
+        return false;
+    }
+
+    throw new Exception($error);
+}, E_WARNING);
+
+/**
+ * Create our console application
+ */
+$application = new \Symfony\Component\Console\Application();
+
+/**
+ * Add a command to our application
+ */
+$application->add(new \Azi\Console\NewCommand());
+
+/**
+ * Run the application
+ */
+$application->run();
