@@ -1,7 +1,10 @@
 {
   "name": "azi/timber",
   "description": "Install timber like artisans",
-  "type": "composer-plugin",
+  "keywords": [
+    "timber",
+    "wordpress"
+  ],
   "license": "MIT",
   "authors": [
     {
