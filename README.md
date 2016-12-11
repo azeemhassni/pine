@@ -7,11 +7,11 @@ composer global require azi/timber
 ```
 # Usage
 ```bash
-timber new my-blog
+timber new blog
 ```
 This will download and install wordpress as well as timber with basic theme directory structure
 
 ## Asking for specific WordPress version
 ```bash
-timber new my-blog 4.6
+timber new blog 4.6
 ```
