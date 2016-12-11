@@ -175,7 +175,11 @@ class Theme
 
         file_put_contents(
             $stylesheet,
-            str_replace('@THEME_NAME@', $this->name, file_get_contents($stylesheet))
+            str_replace(
+                ['@THEME_NAME@', '@AUTHOR_NAME@'],
+                [$this->name, get_current_user()],
+                file_get_contents($stylesheet)
+            )
         );
 
         return $this;
