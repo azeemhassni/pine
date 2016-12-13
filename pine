@@ -12,7 +12,7 @@ if (file_exists(__DIR__ . '/../../autoload.php')) {
 /**
  * Create our console application
  */
-$application = new \Symfony\Component\Console\Application('Timber Installer', VERSION);
+$application = new \Symfony\Component\Console\Application('pine - A CLI installer for timber', VERSION);
 
 /**
  * Add a command to our application
