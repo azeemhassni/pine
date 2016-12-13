@@ -1,9 +1,11 @@
 {
-  "name": "azi/timber",
-  "description": "Install timber like artisans",
+  "name": "azi/pine",
+  "description": "pine - A CLI installer for timber.",
   "keywords": [
     "timber",
-    "wordpress"
+    "wordpress",
+    "cli",
+    "installer"
   ],
   "license": "MIT",
   "authors": [
@@ -25,6 +27,6 @@
     "symfony/filesystem": "^3.2"
   },
   "bin": [
-    "timber"
+    "pine"
   ]
 }
