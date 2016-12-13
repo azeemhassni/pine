@@ -131,7 +131,7 @@ class NewCommand extends Command
             return $zipFilePath;
         }
 
-        $file = (new Client())->get($this->getUrl());
+        $file = (new Client(['verify' => false]))->get($this->getUrl());
         file_put_contents($zipFilePath, $file->getBody());
         return $zipFilePath;
     }
