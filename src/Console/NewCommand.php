@@ -2,12 +2,15 @@
 
 use Azi\Generators\Theme;
 use GuzzleHttp\Client;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class NewCommand
@@ -28,6 +31,10 @@ class NewCommand extends Command
 
     protected $app;
     protected $version;
+    /**
+     * @var Filesystem
+     */
+    protected $fileSystem;
 
     /**
      * NewCommand constructor.
@@ -111,10 +118,13 @@ class NewCommand extends Command
 
         $output->writeln('<info>Downloading wordpress..</info> this might take a while');
         $zipFile = $this->download();
+
         $output->writeln('<info>Extracting package</info>');
         $this->extract($zipFile);
+
         $output->writeln('<info>Generating wordpress theme & installing timber</info>');
         (new Theme($this->getApp(), $input, $output))->generate();
+
         $output->writeln('<comment>All done! Build something amazing.</comment>');
     }
 
@@ -200,14 +210,71 @@ class NewCommand extends Command
     public function extract( $file )
     {
         $projectPath = getcwd() . '/' . $this->getApp();
-
-        $zip = new \ZipArchive();
+        $zip         = new \ZipArchive();
         $zip->open($file);
         $zip->extractTo($projectPath);
 
-        # Kind of a hack but works.
-        exec("mv " . $projectPath . "/wordpress/* $projectPath");
-        rmdir($projectPath . '/wordpress');
+        $this->move($projectPath . "/wordpress/", $projectPath);
+        $this->delete($projectPath . "/wordpress/");
+    }
+
+    /**
+     * Delete a directory recursively
+     *
+     * @param $directory
+     * @return bool
+     * @link http://stackoverflow.com/a/1653776/2641971
+     */
+    public function delete( $directory )
+    {
+        if (!file_exists($directory)) {
+            return true;
+        }
+
+        if (!is_dir($directory)) {
+            return unlink($directory);
+        }
+
+        foreach (scandir($directory) as $item) {
+            if ($item == '.' || $item == '..') {
+                continue;
+            }
+
+            if (!$this->delete($directory . DIRECTORY_SEPARATOR . $item)) {
+                return false;
+            }
+
+        }
+
+        return rmdir($directory);
+    }
+
+    /**
+     * Move files from one directory to another
+     *
+     * @param $source
+     * @param $destination
+     * @link http://stackoverflow.com/a/27290570/2641971
+     */
+    public function move( $source, $destination )
+    {
+        $this->fileSystem = new Filesystem();
+
+        if (!is_dir($destination)) {
+            $this->fileSystem->mkdir($destination);
+        }
+
+        $directoryIterator = new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $iterator          = new \RecursiveIteratorIterator($directoryIterator, \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($iterator as $item) {
+
+            if ($item->isDir()) {
+                $this->fileSystem->mkdir($destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+            } else {
+                $this->fileSystem->rename($item, $destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+            }
+        }
+
     }
 
     /**
