@@ -6,6 +6,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -116,8 +117,7 @@ class NewCommand extends Command
 
         $this->createApplicationDirectory();
 
-        $output->writeln('<info>Downloading wordpress..</info> this might take a while');
-        $zipFile = $this->download();
+        $zipFile = $this->download($output);
 
         $output->writeln('<info>Extracting package</info>');
         $this->extract($zipFile);
@@ -131,9 +131,10 @@ class NewCommand extends Command
     /**
      * Download WordPress Zip package
      *
+     * @param OutputInterface $output
      * @return string
      */
-    public function download()
+    public function download($output)
     {
         $zipFilePath = $this->getZipFilePath();
 
@@ -141,8 +142,31 @@ class NewCommand extends Command
             return $zipFilePath;
         }
 
-        $file = (new Client(['verify' => false]))->get($this->getUrl());
-        file_put_contents($zipFilePath, $file->getBody());
+        $file = (new Client([
+            'verify' => false,
+        ]));
+
+        $zipFileResource = fopen($zipFilePath, 'w');
+        $downloadProgress = new ProgressBar($output);
+        $downloadProgress->setFormatDefinition('custom', '<info>Downloading WordPress: %downloaded%%</info>');
+        $downloadProgress->setFormat('custom');
+        $downloadProgress->start();
+        $file->request('GET', $this->getUrl(), [
+            'sink' => $zipFileResource,
+            'progress' => function (
+                $downloadTotal,
+                $downloadedBytes,
+                $uploadTotal,
+                $uploadedBytes
+            ) use ($downloadProgress) {
+                $progressValue = 0;
+                if ($downloadedBytes > 0) {
+                    $progressValue = ($downloadedBytes / $downloadTotal) * 100;
+                }
+                $downloadProgress->advance();
+                $downloadProgress->setMessage(round($progressValue, 2), 'downloaded');
+            },
+        ]);
         return $zipFilePath;
     }
 
