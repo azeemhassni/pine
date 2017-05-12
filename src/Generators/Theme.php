@@ -69,7 +69,7 @@ class Theme
             ->scaffoldWPTheme()
             ->replaceThemeName();
 
-        if($this->input->getOption('skip-npm')) {
+        if(!$this->input->getOption('skip-npm')) {
             $this->setupGulp();
         }
 
