@@ -92,11 +92,16 @@ class NewCommand extends Command
      */
     protected function configure()
     {
+
         $this
             ->setName('new')
             ->setDescription('Create a new WordPress application with Timber.')
             ->addArgument('name', InputArgument::OPTIONAL, 'Your applications\'s name')
-            ->addArgument('version', InputArgument::OPTIONAL, 'The version of WordPress to download');
+            ->addArgument('version', InputArgument::OPTIONAL, 'The version of WordPress to download')
+
+            ->addOption('npm', null, InputOption::VALUE_NONE, 'Pass this option if you want to install npm packages');
+
+
     }
 
     /**
@@ -119,7 +124,7 @@ class NewCommand extends Command
 
         $zipFile = $this->download($output);
 
-        $output->writeln( '<info>Extracting package</info>');
+        $output->writeln('<info>Extracting package</info>');
         $this->extract($zipFile);
 
         $output->writeln('<info>Generating WordPress theme & installing timber</info>');
@@ -329,7 +334,9 @@ class NewCommand extends Command
      */
     protected function verifyZipIntegrity($algorithm = 'md5')
     {
-        $request = new Client();
+        $request = new Client([
+            'verify' => false
+        ]);
         $response = $request->get($this->getUrl($algorithm));
         $remoteChecksum = $response->getBody();
         $localChecksum = md5_file($this->getZipFilePath());

@@ -7,6 +7,7 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 
 /**
  * Class Theme
@@ -44,13 +45,13 @@ class Theme
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    public function __construct( $name, InputInterface $input, OutputInterface $output )
+    public function __construct($name, InputInterface $input, OutputInterface $output)
     {
-        $this->name       = $name;
-        $this->path       = getcwd() . '/' . $name . '/wp-content/themes/' . $name;
+        $this->name = $name;
+        $this->path = getcwd() . '/' . $name . '/wp-content/themes/' . $name;
         $this->fileSystem = new Filesystem();
-        $this->input      = $input;
-        $this->output     = $output;
+        $this->input = $input;
+        $this->output = $output;
     }
 
     public function getThemeFilesDirectory()
@@ -67,9 +68,36 @@ class Theme
             ->installTimber()
             ->scaffoldWPTheme()
             ->replaceThemeName();
+        
+        if($this->input->getOption('npm')) {
+            $this->setupGulp();
+        }
 
         return $this;
     }
+
+    /**
+     * @return Process
+     */
+    public function setupGulp()
+    {
+        $process = new Process("cd $this->path && npm install");
+
+
+        $process->setTimeout(2 * 3600);
+
+        if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
+            $process->setTty(true);
+        }
+
+        $process->run(function ( $type, $line ) {
+            $this->output->writeln($line);
+
+        });
+
+        return $this;
+    }
+
 
     /**
      * Create theme directory
@@ -107,7 +135,7 @@ class Theme
      * @param InputInterface $input
      * @return Theme
      */
-    public function setInput( $input )
+    public function setInput($input)
     {
         $this->input = $input;
 
@@ -126,7 +154,7 @@ class Theme
      * @param OutputInterface $output
      * @return Theme
      */
-    public function setOutput( $output )
+    public function setOutput($output)
     {
         $this->output = $output;
 
@@ -139,7 +167,7 @@ class Theme
      * @param $directory
      * @return $this
      */
-    protected function copyFiles( $directory )
+    protected function copyFiles($directory)
     {
         $files = glob($directory . '/*');
 
@@ -172,7 +200,11 @@ class Theme
     private function replaceThemeName()
     {
         $stylesheet = $this->path . '/style.css';
+        $packageJson = $this->path . '/package.json';
 
+        /**
+         * Replace Author & Theme Name in style.css File
+         */
         file_put_contents(
             $stylesheet,
             str_replace(
@@ -181,6 +213,19 @@ class Theme
                 file_get_contents($stylesheet)
             )
         );
+
+        /**
+         * Replace Author & Package Name in package.json File
+         */
+        file_put_contents(
+            $packageJson,
+            str_replace(
+                ['@THEME_NAME@', '@AUTHOR_NAME@'],
+                [$this->name, get_current_user()],
+                file_get_contents($packageJson)
+            )
+        );
+
 
         return $this;
     }
