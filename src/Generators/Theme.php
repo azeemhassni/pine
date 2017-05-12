@@ -68,12 +68,10 @@ class Theme
             ->installTimber()
             ->scaffoldWPTheme()
             ->replaceThemeName();
-
-        if(!$this->input->getOption('skip-npm')) {
+        
+        if($this->input->getOption('npm')) {
             $this->setupGulp();
         }
-
-//            ->setupGulp();
 
         return $this;
     }
@@ -83,7 +81,7 @@ class Theme
      */
     public function setupGulp()
     {
-        $process = new Process("cd $this->path && echo {} > package.json && npm install gulp gulp-clean-css gulp-concat gulp-imagemin gulp-rename gulp-sass gulp-uglify  --save-dev");
+        $process = new Process("cd $this->path && npm install");
 
 
         $process->setTimeout(2 * 3600);
@@ -202,7 +200,11 @@ class Theme
     private function replaceThemeName()
     {
         $stylesheet = $this->path . '/style.css';
+        $packageJson = $this->path . '/package.json';
 
+        /**
+         * Replace Author & Theme Name in style.css File
+         */
         file_put_contents(
             $stylesheet,
             str_replace(
@@ -211,6 +213,19 @@ class Theme
                 file_get_contents($stylesheet)
             )
         );
+
+        /**
+         * Replace Author & Package Name in package.json File
+         */
+        file_put_contents(
+            $packageJson,
+            str_replace(
+                ['@THEME_NAME@', '@AUTHOR_NAME@'],
+                [$this->name, get_current_user()],
+                file_get_contents($packageJson)
+            )
+        );
+
 
         return $this;
     }

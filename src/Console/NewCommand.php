@@ -99,7 +99,7 @@ class NewCommand extends Command
             ->addArgument('name', InputArgument::OPTIONAL, 'Your applications\'s name')
             ->addArgument('version', InputArgument::OPTIONAL, 'The version of WordPress to download')
 
-            ->addOption('skip-npm', null, InputOption::VALUE_NONE, 'Pass this option if you want to skip npm packages');
+            ->addOption('npm', null, InputOption::VALUE_NONE, 'Pass this option if you want to install npm packages');
 
 
     }
