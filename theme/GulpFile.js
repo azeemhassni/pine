@@ -31,7 +31,7 @@ gulp.task('images', function () {
  * Scripts Task
  */
 gulp.task('scripts', function(){
-    return gulp.src(['resources/libs/**/*.js'])
+    return gulp.src(['resources/js/**/*.js'])
         .pipe(concat('all.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('assets/js/'))
@@ -43,7 +43,7 @@ gulp.task('scripts', function(){
  */
 gulp.task('watch', function () {
     gulp.watch('resources/sass/**/*.scss', ['styles']);
-    gulp.watch('resources/libs/*.js', ['scripts']);
+    gulp.watch('resources/js/*.js', ['scripts']);
 });
 
 /**
