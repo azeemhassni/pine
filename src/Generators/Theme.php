@@ -78,8 +78,16 @@ class Theme
      */
     public function setupGulp()
     {
-        $process = new Process("cd $this->path && echo {} > package.json && npm install gulp gulp-clean-css gulp-concat gulp-cssmin gulp-imagemin gulp-rename gulp-sass gulp-uglify streamqueue --save-dev");
-        return $process;
+        $process = new Process("cd $this->path && echo {} > package.json && npm install gulp gulp-clean-css gulp-concat gulp-imagemin gulp-rename gulp-sass gulp-uglify  --save-dev");
+        if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
+            $process->setTty(true);
+        }
+
+        $process->run(function ( $type, $line ) {
+            $this->output->writeln($line);
+        });
+
+        return $this;
     }
 
     /**
