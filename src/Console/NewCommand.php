@@ -329,7 +329,9 @@ class NewCommand extends Command
      */
     protected function verifyZipIntegrity($algorithm = 'md5')
     {
-        $request = new Client();
+        $request = new Client([
+            'verify' => false
+        ]);
         $response = $request->get($this->getUrl($algorithm));
         $remoteChecksum = $response->getBody();
         $localChecksum = md5_file($this->getZipFilePath());
