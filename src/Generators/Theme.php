@@ -68,8 +68,7 @@ class Theme
             ->installTimber()
             ->scaffoldWPTheme()
             ->replaceThemeName()
-            ->setupGulp()
-        ->setTimeout(180);
+            ->setupGulp();
 
         return $this;
     }
@@ -80,25 +79,22 @@ class Theme
     public function setupGulp()
     {
         $process = new Process("cd $this->path && echo {} > package.json && npm install gulp gulp-clean-css gulp-concat gulp-imagemin gulp-rename gulp-sass gulp-uglify  --save-dev");
+
+
+        $process->setTimeout(2 * 3600);
+
         if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
             $process->setTty(true);
         }
 
         $process->run(function ( $type, $line ) {
             $this->output->writeln($line);
+
         });
 
         return $this;
     }
 
-    /**
-     * Sets timeout for Symphony process
-     * @param $timeout
-     */
-    public function setTimeout($timeout)
-    {
-        $this->timeout = $timeout;
-    }
 
     /**
      * Create theme directory
