@@ -67,8 +67,13 @@ class Theme
         $this->createDirectory()
             ->installTimber()
             ->scaffoldWPTheme()
-            ->replaceThemeName()
-            ->setupGulp();
+            ->replaceThemeName();
+
+        if($this->input->getOption('skip-npm')) {
+            $this->setupGulp();
+        }
+
+//            ->setupGulp();
 
         return $this;
     }
