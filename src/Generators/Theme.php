@@ -68,7 +68,8 @@ class Theme
             ->installTimber()
             ->scaffoldWPTheme()
             ->replaceThemeName()
-            ->setupGulp();
+            ->setupGulp()
+        ->setTimeout(180);
 
         return $this;
     }
@@ -88,6 +89,15 @@ class Theme
         });
 
         return $this;
+    }
+
+    /**
+     * Sets timeout for Symphony process
+     * @param $timeout
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
     }
 
     /**
