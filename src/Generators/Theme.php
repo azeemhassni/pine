@@ -7,6 +7,7 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 
 /**
  * Class Theme
@@ -44,13 +45,13 @@ class Theme
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    public function __construct( $name, InputInterface $input, OutputInterface $output )
+    public function __construct($name, InputInterface $input, OutputInterface $output)
     {
-        $this->name       = $name;
-        $this->path       = getcwd() . '/' . $name . '/wp-content/themes/' . $name;
+        $this->name = $name;
+        $this->path = getcwd() . '/' . $name . '/wp-content/themes/' . $name;
         $this->fileSystem = new Filesystem();
-        $this->input      = $input;
-        $this->output     = $output;
+        $this->input = $input;
+        $this->output = $output;
     }
 
     public function getThemeFilesDirectory()
@@ -66,9 +67,19 @@ class Theme
         $this->createDirectory()
             ->installTimber()
             ->scaffoldWPTheme()
-            ->replaceThemeName();
+            ->replaceThemeName()
+            ->setupGulp();
 
         return $this;
+    }
+
+    /**
+     * @return Process
+     */
+    public function setupGulp()
+    {
+        $process = new Process("cd $this->path && echo {} > package.json && npm install gulp gulp-clean-css gulp-concat gulp-cssmin gulp-imagemin gulp-rename gulp-sass gulp-uglify streamqueue --save-dev");
+        return $process;
     }
 
     /**
@@ -107,7 +118,7 @@ class Theme
      * @param InputInterface $input
      * @return Theme
      */
-    public function setInput( $input )
+    public function setInput($input)
     {
         $this->input = $input;
 
@@ -126,7 +137,7 @@ class Theme
      * @param OutputInterface $output
      * @return Theme
      */
-    public function setOutput( $output )
+    public function setOutput($output)
     {
         $this->output = $output;
 
@@ -139,7 +150,7 @@ class Theme
      * @param $directory
      * @return $this
      */
-    protected function copyFiles( $directory )
+    protected function copyFiles($directory)
     {
         $files = glob($directory . '/*');
 
