@@ -1,8 +1,8 @@
 <?php
 
-namespace Azi\Generators;
+namespace Pine\Generators;
 
-use Azi\TimberInstaller;
+use Pine\TimberInstaller;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

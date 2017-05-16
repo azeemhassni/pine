@@ -1,6 +1,6 @@
 <?php
 
-namespace Azi\Traits;
+namespace Pine\Traits;
 
 use Symfony\Component\Process\Process;
 

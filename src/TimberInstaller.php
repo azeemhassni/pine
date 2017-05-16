@@ -1,8 +1,8 @@
 <?php
 
-namespace Azi;
+namespace Pine;
 
-use Azi\Traits\Composer;
+use Pine\Traits\Composer;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 

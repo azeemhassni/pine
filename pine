@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php
 
+use Pine\Console\NewCommand;
+use Symfony\Component\Console\Application;
+
 define('VERSION', '2.2.1');
 
 if (file_exists(__DIR__ . '/../../autoload.php')) {
@@ -12,12 +15,12 @@ if (file_exists(__DIR__ . '/../../autoload.php')) {
 /**
  * Create our console application
  */
-$application = new \Symfony\Component\Console\Application('pine - A CLI installer for timber', VERSION);
+$application = new Application('pine - A CLI installer for timber', VERSION);
 
 /**
  * Add a command to our application
  */
-$application->add(new \Azi\Console\NewCommand());
+$application->add(new NewCommand());
 
 /**
  * Run the application
