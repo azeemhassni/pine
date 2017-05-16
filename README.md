@@ -5,7 +5,7 @@
 A CLI tool written in PHP based on symfony console to easily create a Timber project.
 
 
-![Pine Animated Demo](https://gifyu.com/images/pine-new-demo2.gif)
+![Pine Animated Demo](https://gifyu.com/images/pine-animation.gif)
 
 # Installation
 ```bash
