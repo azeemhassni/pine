@@ -2,6 +2,7 @@
 
 namespace Pine\Generators;
 
+use Pine\Config\Config;
 use Pine\TimberInstaller;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,6 +38,10 @@ class Theme
      * @var OutputInterface $output
      */
     protected $output;
+    /**
+     * @var Config
+     */
+    protected $config;
 
     /**
      * Theme constructor.
@@ -44,19 +49,16 @@ class Theme
      * @param $name
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @param Config $config
      */
-    public function __construct($name, InputInterface $input, OutputInterface $output)
+    public function __construct( $name, InputInterface $input, OutputInterface $output, Config $config )
     {
-        $this->name = $name;
-        $this->path = getcwd() . '/' . $name . '/wp-content/themes/' . $name;
+        $this->name       = $name;
+        $this->path       = getcwd() . '/' . $name . '/wp-content/themes/' . $name;
         $this->fileSystem = new Filesystem();
-        $this->input = $input;
-        $this->output = $output;
-    }
-
-    public function getThemeFilesDirectory()
-    {
-        return dirname(dirname(__DIR__)) . '/theme/';
+        $this->input      = $input;
+        $this->output     = $output;
+        $this->config     = $config;
     }
 
     /**
@@ -68,8 +70,8 @@ class Theme
             ->installTimber()
             ->scaffoldWPTheme()
             ->replaceThemeName();
-        
-        if($this->input->getOption('npm')) {
+
+        if ($this->input->getOption('npm')) {
             $this->setupGulp();
         }
 
@@ -77,87 +79,42 @@ class Theme
     }
 
     /**
-     * @return Process
+     * @return $this
      */
-    public function setupGulp()
+    protected function replaceThemeName()
     {
-        $process = new Process("cd $this->path && npm install");
+        $files = [
+            $this->path . '/style.css',
+            $this->path . '/package.json'
+        ];
 
 
-        $process->setTimeout(2 * 3600);
+        /**
+         * Replace Author & Theme Name in style.css File
+         */
+        foreach ($files as $file) {
+            file_put_contents(
+                $file,
+                str_replace(
+                    ['@THEME_NAME@', '@AUTHOR_NAME@'],
+                    [$this->name, $this->config->get('author')],
+                    file_get_contents($file)
+                )
+            );
 
-        if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
-            $process->setTty(true);
         }
 
-        $process->run(function ( $type, $line ) {
-            $this->output->writeln($line);
-
-        });
-
-        return $this;
-    }
-
-
-    /**
-     * Create theme directory
-     */
-    protected function createDirectory()
-    {
-        if (is_dir($this->path) && is_file($this->path)) {
-            throw new RuntimeException('There is a theme with the same name');
-        }
-
-        mkdir($this->path);
-
         return $this;
     }
 
     /**
-     * Install timber
+     * Generate basic Timber theme
+     *
+     * @return $this
      */
-    protected function installTimber()
+    protected function scaffoldWPTheme()
     {
-        (new TimberInstaller($this->path, $this->output))->install();
-
-        return $this;
-    }
-
-    /**
-     * @return InputInterface
-     */
-    public function getInput()
-    {
-        return $this->input;
-    }
-
-    /**
-     * @param InputInterface $input
-     * @return Theme
-     */
-    public function setInput($input)
-    {
-        $this->input = $input;
-
-        return $this;
-    }
-
-    /**
-     * @return OutputInterface
-     */
-    public function getOutput()
-    {
-        return $this->output;
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @return Theme
-     */
-    public function setOutput($output)
-    {
-        $this->output = $output;
-
+        $this->copyFiles($this->getThemeFilesDirectory());
         return $this;
     }
 
@@ -167,7 +124,7 @@ class Theme
      * @param $directory
      * @return $this
      */
-    protected function copyFiles($directory)
+    protected function copyFiles( $directory )
     {
         $files = glob($directory . '/*');
 
@@ -186,47 +143,94 @@ class Theme
     }
 
     /**
-     * @return $this
+     * Theme boilerplate directory
+     *
+     * @return string
      */
-    protected function scaffoldWPTheme()
+    public function getThemeFilesDirectory()
     {
-        $this->copyFiles($this->getThemeFilesDirectory());
+        return dirname(dirname(__DIR__)) . '/theme/';
+    }
+
+    /**
+     * Install timber
+     *
+     * @return Theme
+     */
+    protected function installTimber()
+    {
+        ( new TimberInstaller($this->path, $this->output) )->install();
         return $this;
     }
 
     /**
-     * @return $this
+     * Create theme directory
      */
-    private function replaceThemeName()
+    protected function createDirectory()
     {
-        $stylesheet = $this->path . '/style.css';
-        $packageJson = $this->path . '/package.json';
+        if (is_dir($this->path) && is_file($this->path)) {
+            throw new RuntimeException('There is a theme with the same name');
+        }
 
-        /**
-         * Replace Author & Theme Name in style.css File
-         */
-        file_put_contents(
-            $stylesheet,
-            str_replace(
-                ['@THEME_NAME@', '@AUTHOR_NAME@'],
-                [$this->name, get_current_user()],
-                file_get_contents($stylesheet)
-            )
-        );
+        mkdir($this->path);
 
-        /**
-         * Replace Author & Package Name in package.json File
-         */
-        file_put_contents(
-            $packageJson,
-            str_replace(
-                ['@THEME_NAME@', '@AUTHOR_NAME@'],
-                [$this->name, get_current_user()],
-                file_get_contents($packageJson)
-            )
-        );
+        return $this;
+    }
 
+    /**
+     * @return Theme
+     */
+    public function setupGulp()
+    {
+        $process = new Process("cd $this->path && npm install");
 
+        $process->setTimeout(2 * 3600);
+
+        if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
+            $process->setTty(true);
+        }
+
+        $process->run(function ( $type, $line ) {
+            $this->output->writeln($line);
+        });
+
+        return $this;
+    }
+
+    /**
+     * @return InputInterface
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @return Theme
+     */
+    public function setInput( $input )
+    {
+        $this->input = $input;
+
+        return $this;
+    }
+
+    /**
+     * @return OutputInterface
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @return Theme
+     */
+    public function setOutput( $output )
+    {
+        $this->output = $output;
         return $this;
     }
 }
