@@ -1,5 +1,5 @@
 
-![Pine Github cover image](https://s28.postimg.org/l73gxg45p/pine_github_cover.png)
+![Pine Github cover image](https://s18.postimg.org/xpextxkm1/pine-cover-centered.png)
 
 # pine - A CLI installer for timber
 A CLI tool written in PHP based on symfony console to easily create a Timber project.
