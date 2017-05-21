@@ -1,10 +1,14 @@
 #!/usr/bin/env php
 <?php
 
+use Pine\Config\Config;
+use Pine\Console\InitCommand;
 use Pine\Console\NewCommand;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Yaml\Yaml;
 
-define('VERSION', '2.2.1');
+define('VERSION', '2.3');
+define('CONFIG_PATH', $_SERVER[ 'HOME' ] . DIRECTORY_SEPARATOR . "pine.yaml");
 
 if (file_exists(__DIR__ . '/../../autoload.php')) {
     require __DIR__ . '/../../autoload.php';
@@ -15,12 +19,15 @@ if (file_exists(__DIR__ . '/../../autoload.php')) {
 /**
  * Create our console application
  */
-$application = new Application('pine - A CLI installer for timber', VERSION);
+$application = new Application('pine - A CLI installer for Timber', VERSION);
+
+$config = new Config(new Yaml());
 
 /**
  * Add a command to our application
  */
-$application->add(new NewCommand());
+$application->add(new NewCommand($config));
+$application->add(new InitCommand($config));
 
 /**
  * Run the application
