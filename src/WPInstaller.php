@@ -70,7 +70,7 @@ class WPInstaller
     /**
      * @param $path
      */
-    public function install( $path )
+    public function install($path)
     {
         $this->path = $path;
         $this->connect()
@@ -151,13 +151,16 @@ class WPInstaller
     }
 
     /**
+     * Create database
+     *
      * @return $this
      */
     protected function createDatabase()
     {
         $this->output->writeln('Creating database');
         $created = $this->connection->query(
-            sprintf('CREATE DATABASE IF NOT EXISTS `%s`', $this->input->getArgument('name'))
+            sprintf('CREATE DATABASE IF NOT EXISTS `%s`',
+                $this->input->getOption('db') ?: $this->input->getArgument('name'))
         );
 
         if (!$created) {

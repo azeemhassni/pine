@@ -28,7 +28,7 @@ class TimberInstaller
      * @param $themeDirectory
      * @param OutputInterface $output
      */
-    public function __construct( $themeDirectory, OutputInterface $output )
+    public function __construct($themeDirectory, OutputInterface $output)
     {
         $this->themeDirectory = $themeDirectory;
         $this->output         = $output;
@@ -46,7 +46,7 @@ class TimberInstaller
             $process->setTty(true);
         }
 
-        $process->run(function ( $type, $line ) {
+        $process->run(function ($type, $line) {
             $this->output->writeln($line);
         });
 

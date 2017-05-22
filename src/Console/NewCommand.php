@@ -48,7 +48,7 @@ class NewCommand extends Command
      * @param Config $config
      * @param null $name
      */
-    public function __construct( Config $config, $name = null )
+    public function __construct(Config $config, $name = null)
     {
         $this->cacheDirectory = $this->getCacheDirectory();
         $this->createCacheDirectory();
@@ -82,7 +82,7 @@ class NewCommand extends Command
      * @param OutputInterface $output
      * @return int|null|void
      */
-    public function execute( InputInterface $input, OutputInterface $output )
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$this->config->isConfigured()) {
             $output->writeln('<info>Your pine installation is not configured, please complete the interactive setup to configure it.</info>');
@@ -97,7 +97,7 @@ class NewCommand extends Command
         $this->setApp($input->getArgument('name'))->setVersion($input->getArgument('version'));
 
         $this->verifyApplicationDoesNotExists(
-            $directory = ( $input->getArgument('name') ) ? getcwd() . '/' . $input->getArgument('name') : getcwd()
+            $directory = ($input->getArgument('name')) ? getcwd() . '/' . $input->getArgument('name') : getcwd()
         );
         $this->setApp($input->getArgument('name'))->setVersion($input->getArgument('version'));
 
@@ -109,11 +109,11 @@ class NewCommand extends Command
         $this->extract($zipFile);
 
         $output->writeln('<info>Generating WordPress theme & installing timber</info>');
-        ( new Theme($this->getApp(), $input, $output, $this->config) )->generate();
+        (new Theme($this->getApp(), $input, $output, $this->config))->generate();
 
         // install WordPress
         if ($input->hasOption('skip-install')) {
-            ( new WPInstaller($this, $this->config, $input, $output, new WPCli($input, $output)) )->install(
+            (new WPInstaller($this, $this->config, $input, $output, new WPCli($input, $output)))->install(
                 realpath($this->getApp())
             );
         }
@@ -125,11 +125,11 @@ class NewCommand extends Command
      * @param $directory
      * @return bool
      */
-    protected function verifyApplicationDoesNotExists( $directory )
+    protected function verifyApplicationDoesNotExists($directory)
     {
-        $isEmpty = ( count(glob("$directory/*")) === 0 ) ? true : false;
+        $isEmpty = (count(glob("$directory/*")) === 0) ? true : false;
 
-        if (( is_dir($directory) || is_file($directory) ) && $directory != getcwd() && !$isEmpty) {
+        if ((is_dir($directory) || is_file($directory)) && $directory != getcwd() && !$isEmpty) {
             throw new RuntimeException('Application already exists!');
         }
 
@@ -166,7 +166,7 @@ class NewCommand extends Command
      * @param mixed $app
      * @return NewCommand
      */
-    public function setApp( $app )
+    public function setApp($app)
     {
         $this->app = $app;
 
@@ -179,7 +179,7 @@ class NewCommand extends Command
      * @param OutputInterface $output
      * @return string
      */
-    public function download( $output )
+    public function download($output)
     {
         $zipFilePath = $this->getZipFilePath();
 
@@ -189,9 +189,9 @@ class NewCommand extends Command
             return $zipFilePath;
         }
 
-        $file = ( new Client([
+        $file = (new Client([
             'verify' => false,
-        ]) );
+        ]));
 
         $zipFileResource  = fopen($zipFilePath, 'w');
         $downloadProgress = new ProgressBar($output);
@@ -205,10 +205,10 @@ class NewCommand extends Command
                 $downloadedBytes,
                 $uploadTotal,
                 $uploadedBytes
-            ) use ( $downloadProgress ) {
+            ) use ($downloadProgress) {
                 $progressValue = 0;
                 if ($downloadedBytes > 0) {
-                    $progressValue = ( $downloadedBytes / $downloadTotal ) * 100;
+                    $progressValue = ($downloadedBytes / $downloadTotal) * 100;
                 }
 
 //                if ($downloadTotal) {
@@ -261,7 +261,7 @@ class NewCommand extends Command
      * @param mixed $version
      * @return NewCommand
      */
-    public function setVersion( $version )
+    public function setVersion($version)
     {
         $this->version = $version;
 
@@ -272,7 +272,7 @@ class NewCommand extends Command
      * @param string $algorithm md5|sha1
      * @return bool
      */
-    protected function verifyZipIntegrity( $algorithm = 'md5' )
+    protected function verifyZipIntegrity($algorithm = 'md5')
     {
         $request        = new Client([
             'verify' => false,
@@ -280,7 +280,7 @@ class NewCommand extends Command
         $response       = $request->get($this->getUrl($algorithm));
         $remoteChecksum = $response->getBody();
         $localChecksum  = md5_file($this->getZipFilePath());
-        if ($algorithm == 'md5' && ( $remoteChecksum != $localChecksum )) {
+        if ($algorithm == 'md5' && ($remoteChecksum != $localChecksum)) {
             unlink($this->getZipFilePath());
             echo "Cannot verify integrity of {$this->getZipFilePath()}.\n We have deleted the file.\n Downloading it again. \n";
 
@@ -296,7 +296,7 @@ class NewCommand extends Command
      * @param null $checksum
      * @return mixed null|md5|sha1
      */
-    protected function getUrl( $checksum = null )
+    protected function getUrl($checksum = null)
     {
         $url = $this->baseUrl . '/latest.zip';
         if ($version = $this->getVersion()) {
@@ -313,7 +313,7 @@ class NewCommand extends Command
     /**
      * @param $file
      */
-    public function extract( $file )
+    public function extract($file)
     {
         $projectPath = getcwd() . '/' . $this->getApp();
         $zip         = new \ZipArchive();
@@ -331,7 +331,7 @@ class NewCommand extends Command
      * @param $destination
      * @link http://stackoverflow.com/a/27290570/2641971
      */
-    public function move( $source, $destination )
+    public function move($source, $destination)
     {
         $this->fileSystem = new Filesystem();
 
@@ -357,7 +357,7 @@ class NewCommand extends Command
      * @return bool
      * @link http://stackoverflow.com/a/1653776/2641971
      */
-    public function delete( $directory )
+    public function delete($directory)
     {
         if (!file_exists($directory)) {
             return true;

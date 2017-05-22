@@ -12,11 +12,11 @@ trait Composer
     /**
      * @param $package
      */
-    protected function install( $package )
+    protected function install($package)
     {
         $command = $this->findComposer() . ' require ' . $package;
         $process = new Process($command);
-        $process->run(function ( $type, $line ) {
+        $process->run(function ($type, $line) {
             echo $line . PHP_EOL;
         });
     }

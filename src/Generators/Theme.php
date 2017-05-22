@@ -49,7 +49,7 @@ class Theme
      * @param OutputInterface $output
      * @param Config $config
      */
-    public function __construct( $name, InputInterface $input, OutputInterface $output, Config $config )
+    public function __construct($name, InputInterface $input, OutputInterface $output, Config $config)
     {
         $this->name       = $name;
         $this->path       = getcwd() . '/' . $name . '/wp-content/themes/' . $name;
@@ -121,7 +121,7 @@ class Theme
      * @param $directory
      * @return $this
      */
-    protected function copyFiles( $directory )
+    protected function copyFiles($directory)
     {
         $files = glob($directory . '/*');
 
@@ -155,7 +155,7 @@ class Theme
      */
     protected function installTimber()
     {
-        ( new TimberInstaller($this->path, $this->output) )->install();
+        (new TimberInstaller($this->path, $this->output))->install();
 
         return $this;
     }
@@ -187,7 +187,7 @@ class Theme
             $process->setTty(true);
         }
 
-        $process->run(function ( $type, $line ) {
+        $process->run(function ($type, $line) {
             $this->output->writeln($line);
         });
 
@@ -206,7 +206,7 @@ class Theme
      * @param InputInterface $input
      * @return Theme
      */
-    public function setInput( $input )
+    public function setInput($input)
     {
         $this->input = $input;
 
@@ -225,7 +225,7 @@ class Theme
      * @param OutputInterface $output
      * @return Theme
      */
-    public function setOutput( $output )
+    public function setOutput($output)
     {
         $this->output = $output;
 

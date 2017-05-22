@@ -30,7 +30,7 @@ class WPCli
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    public function __construct( InputInterface $input, OutputInterface $output )
+    public function __construct(InputInterface $input, OutputInterface $output)
     {
         $this->input  = $input;
         $this->output = $output;
@@ -43,7 +43,7 @@ class WPCli
      *
      * @param array $args
      */
-    public function config( $args = [] )
+    public function config($args = [])
     {
         $args = $this->parseArgs([
             'dbname'   => '',
@@ -61,7 +61,7 @@ class WPCli
      * @param array $args
      * @return array
      */
-    public function parseArgs( array $defaults, array $args )
+    public function parseArgs(array $defaults, array $args)
     {
         foreach ($args as $key => $value) {
             if (!empty($value)) {
@@ -79,7 +79,7 @@ class WPCli
      * @param array $args
      * @return Process
      */
-    public function execute( $command, $args = [] )
+    public function execute($command, $args = [])
     {
         $command = "$this->wp $command ";
         foreach ($args as $arg => $value) {
@@ -104,7 +104,7 @@ class WPCli
      * @param $args
      * @return Process
      */
-    public function install( $args )
+    public function install($args)
     {
         $args = $this->parseArgs([
             'url'            => 'localhost/' . $this->input->getArgument('name'),

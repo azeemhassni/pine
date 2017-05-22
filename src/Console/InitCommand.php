@@ -23,7 +23,7 @@ class InitCommand extends Command
      * @param null $name
      * @param Config $config
      */
-    public function __construct( Config $config, $name = null )
+    public function __construct(Config $config, $name = null)
     {
         $this->questions = [
             'host'        => ['Please provide database host address? ', 'localhost'],
@@ -51,7 +51,7 @@ class InitCommand extends Command
      * @param OutputInterface $output
      * @return void
      */
-    public function execute( InputInterface $input, OutputInterface $output )
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         $helper = $this->getHelper('question');
         $output->writeln('Pine Interactive Setup');
@@ -79,7 +79,7 @@ class InitCommand extends Command
      */
     protected function loadDefaults()
     {
-        array_walk($this->questions, function ( &$array, $key ) {
+        array_walk($this->questions, function (&$array, $key) {
             $array[ 1 ] = $this->config->get($key);
 
             return $array;
