@@ -46,6 +46,8 @@ class TimberInstaller
             $process->setTty(true);
         }
 
+        $process->setTimeout(3600);
+
         $process->run(function ($type, $line) {
             $this->output->writeln($line);
         });

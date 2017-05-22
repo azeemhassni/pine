@@ -16,6 +16,7 @@ trait Composer
     {
         $command = $this->findComposer() . ' require ' . $package;
         $process = new Process($command);
+        $process->setTimeout(3600);
         $process->run(function ($type, $line) {
             echo $line . PHP_EOL;
         });
