@@ -92,7 +92,9 @@ class WPCli
         }
 
         $process = new Process($command);
-        $process->setTty(true);
+        if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
+            $process->setTty(true);
+        }
         $process->run();
 
         return $process;
