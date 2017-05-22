@@ -2,13 +2,10 @@
 
 namespace Pine\Config;
 
-
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class Config
- *
- * @package Pine\Config
+ * Class Config.
  */
 class Config implements \ArrayAccess
 {
@@ -32,15 +29,14 @@ class Config implements \ArrayAccess
      *
      * @param Yaml $yaml
      */
-    public function __construct( Yaml $yaml )
+    public function __construct(Yaml $yaml)
     {
-        $this->yaml       = $yaml;
+        $this->yaml = $yaml;
         $this->configPath = CONFIG_PATH;
 
         if ($this->isConfigured()) {
             $this->load();
         }
-
     }
 
     /**
@@ -52,13 +48,14 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * load configurations from file
+     * load configurations from file.
      *
      * @return array|mixed
      */
     public function load()
     {
         $this->config = $this->yaml->parse(file_get_contents($this->configPath));
+
         return $this->config;
     }
 
@@ -71,89 +68,95 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * Save configurations
+     * Save configurations.
      *
-     * @return boolean
+     * @return bool
      */
     public function saveConfig()
     {
         $yaml = $this->yaml->dump($this->config);
-        return !!file_put_contents($this->configPath, $yaml);
+
+        return (bool) file_put_contents($this->configPath, $yaml);
     }
 
     /**
      * @param $key
+     *
      * @return mixed
      */
-    public function __get( $key )
+    public function __get($key)
     {
         return $this->get($key);
     }
 
     /**
      * @param $key
+     *
      * @return mixed
      */
-    public function get( $key )
+    public function get($key)
     {
-        return $this->config[ $key ];
+        return $this->config[$key];
     }
 
     /**
-     * Whether a offset exists
+     * Whether a offset exists.
      *
-     * @param mixed $key    An offset to check for.
-     * @return boolean true on success or false on failure.
-     *                      The return value will be casted to boolean if non-boolean was returned.
+     * @param mixed $key An offset to check for.
+     *
+     * @return bool true on success or false on failure.
+     *              The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists( $key )
+    public function offsetExists($key)
     {
-        return isset($this->config[ $key ]);
+        return isset($this->config[$key]);
     }
 
     /**
-     * Offset to retrieve
+     * Offset to retrieve.
      *
      * @param mixed $key The offset to retrieve.
+     *
      * @return mixed Can return all value types.
      */
-    public function offsetGet( $key )
+    public function offsetGet($key)
     {
         return $this->get($key);
     }
 
     /**
-     * Offset to set
+     * Offset to set.
      *
      * @param mixed $key
      * @param mixed $value
+     *
      * @return void
      */
-    public function offsetSet( $key, $value )
+    public function offsetSet($key, $value)
     {
         $this->set($key, $value);
     }
 
-
     /**
      * @param $key
      * @param $value
      */
-    public function set( $key, $value )
+    public function set($key, $value)
     {
-        $value                = $this->filter($key, $value);
-        $this->config[ $key ] = $value;
+        $value = $this->filter($key, $value);
+        $this->config[$key] = $value;
     }
 
     /**
      * @param $key
      * @param $value
+     *
      * @return mixed
      */
-    protected function filter( $key, $value )
+    protected function filter($key, $value)
     {
-        $method = sprintf("set%sAttribute",
-            implode("", array_map('ucwords', explode("_", $key)))
+        $method = sprintf('set%sAttribute',
+            implode('', array_map('ucwords', explode('_', $key)))
         );
 
         if (method_exists($this, $method)) {
@@ -165,21 +168,22 @@ class Config implements \ArrayAccess
 
     /**
      * @param $value
+     *
      * @return string
      */
-    public function setWpPasswordAttribute( $value )
+    public function setWpPasswordAttribute($value)
     {
         return md5($value);
     }
 
     /**
-     * Unset config value
+     * Unset config value.
      *
      * @param mixed $key
      */
-    public function offsetUnset( $key )
+    public function offsetUnset($key)
     {
-        unset($this->config[ $key ]);
+        unset($this->config[$key]);
     }
 
     /**
