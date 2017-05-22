@@ -28,10 +28,10 @@ class TimberInstaller
      * @param $themeDirectory
      * @param OutputInterface $output
      */
-    public function __construct($themeDirectory, OutputInterface $output)
+    public function __construct( $themeDirectory, OutputInterface $output )
     {
         $this->themeDirectory = $themeDirectory;
-        $this->output = $output;
+        $this->output         = $output;
     }
 
     /**
@@ -39,14 +39,14 @@ class TimberInstaller
      */
     public function install()
     {
-        $command = $this->findComposer().' require timber/timber';
+        $command = $this->findComposer() . ' require timber/timber';
         $process = new Process($command, $this->themeDirectory);
 
         if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
             $process->setTty(true);
         }
 
-        $process->run(function ($type, $line) {
+        $process->run(function ( $type, $line ) {
             $this->output->writeln($line);
         });
 

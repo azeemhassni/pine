@@ -45,18 +45,18 @@ class Theme
      * Theme constructor.
      *
      * @param $name
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @param Config          $config
+     * @param Config $config
      */
-    public function __construct($name, InputInterface $input, OutputInterface $output, Config $config)
+    public function __construct( $name, InputInterface $input, OutputInterface $output, Config $config )
     {
-        $this->name = $name;
-        $this->path = getcwd().'/'.$name.'/wp-content/themes/'.$name;
+        $this->name       = $name;
+        $this->path       = getcwd() . '/' . $name . '/wp-content/themes/' . $name;
         $this->fileSystem = new Filesystem();
-        $this->input = $input;
-        $this->output = $output;
-        $this->config = $config;
+        $this->input      = $input;
+        $this->output     = $output;
+        $this->config     = $config;
     }
 
     /**
@@ -82,8 +82,8 @@ class Theme
     protected function replaceThemeName()
     {
         $files = [
-            $this->path.'/style.css',
-            $this->path.'/package.json',
+            $this->path . '/style.css',
+            $this->path . '/package.json',
         ];
 
         /*
@@ -119,12 +119,11 @@ class Theme
      * Copy files to created theme recursively.
      *
      * @param $directory
-     *
      * @return $this
      */
-    protected function copyFiles($directory)
+    protected function copyFiles( $directory )
     {
-        $files = glob($directory.'/*');
+        $files = glob($directory . '/*');
 
         foreach ($files as $item) {
             if (is_dir($item)) {
@@ -133,7 +132,7 @@ class Theme
             }
 
             $name = str_replace($this->getThemeFilesDirectory(), '', $item);
-            $this->fileSystem->copy($item, $this->path.$name);
+            $this->fileSystem->copy($item, $this->path . $name);
         }
 
         return $this;
@@ -146,7 +145,7 @@ class Theme
      */
     public function getThemeFilesDirectory()
     {
-        return dirname(dirname(__DIR__)).'/theme/';
+        return dirname(dirname(__DIR__)) . '/theme/';
     }
 
     /**
@@ -188,7 +187,7 @@ class Theme
             $process->setTty(true);
         }
 
-        $process->run(function ($type, $line) {
+        $process->run(function ( $type, $line ) {
             $this->output->writeln($line);
         });
 
@@ -205,10 +204,9 @@ class Theme
 
     /**
      * @param InputInterface $input
-     *
      * @return Theme
      */
-    public function setInput($input)
+    public function setInput( $input )
     {
         $this->input = $input;
 
@@ -225,10 +223,9 @@ class Theme
 
     /**
      * @param OutputInterface $output
-     *
      * @return Theme
      */
-    public function setOutput($output)
+    public function setOutput( $output )
     {
         $this->output = $output;
 

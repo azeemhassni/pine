@@ -20,16 +20,16 @@ class Command extends SymfonyCommand
      */
     protected $config;
 
-    public function __construct(Config $config, $name = null)
+    public function __construct( Config $config, $name = null )
     {
         $this->config = $config;
         parent::__construct($name);
     }
 
-    public function call($commandName, OutputInterface $output, $args = [])
+    public function call( $commandName, OutputInterface $output, $args = [] )
     {
         $command = $this->getApplication()->find($commandName);
-        $input = new ArrayInput($args);
+        $input   = new ArrayInput($args);
         $command->run($input, $output);
     }
 }

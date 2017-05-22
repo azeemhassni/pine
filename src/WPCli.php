@@ -27,15 +27,15 @@ class WPCli
     /**
      * WPCli constructor.
      *
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      */
-    public function __construct(InputInterface $input, OutputInterface $output)
+    public function __construct( InputInterface $input, OutputInterface $output )
     {
-        $this->input = $input;
+        $this->input  = $input;
         $this->output = $output;
 
-        $this->wp = dirname(__DIR__).'/vendor/bin/wp';
+        $this->wp = dirname(__DIR__) . '/vendor/bin/wp';
     }
 
     /**
@@ -43,7 +43,7 @@ class WPCli
      *
      * @param array $args
      */
-    public function config($args = [])
+    public function config( $args = [] )
     {
         $args = $this->parseArgs([
             'dbname'   => '',
@@ -59,14 +59,13 @@ class WPCli
     /**
      * @param array $defaults
      * @param array $args
-     *
      * @return array
      */
-    public function parseArgs(array $defaults, array $args)
+    public function parseArgs( array $defaults, array $args )
     {
         foreach ($args as $key => $value) {
             if (!empty($value)) {
-                $defaults[$key] = $value;
+                $defaults[ $key ] = $value;
             }
         }
 
@@ -78,10 +77,9 @@ class WPCli
      *
      * @param $command
      * @param array $args
-     *
      * @return Process
      */
-    public function execute($command, $args = [])
+    public function execute( $command, $args = [] )
     {
         $command = "$this->wp $command ";
         foreach ($args as $arg => $value) {
@@ -104,13 +102,12 @@ class WPCli
      * Install wordpress.
      *
      * @param $args
-     *
      * @return Process
      */
-    public function install($args)
+    public function install( $args )
     {
         $args = $this->parseArgs([
-            'url'            => 'localhost/'.$this->input->getArgument('name'),
+            'url'            => 'localhost/' . $this->input->getArgument('name'),
             'title'          => 'Just another WordPress site',
             'admin_user'     => '',
             'admin_password' => null,

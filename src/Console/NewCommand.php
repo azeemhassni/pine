@@ -46,9 +46,9 @@ class NewCommand extends Command
      * NewCommand constructor.
      *
      * @param Config $config
-     * @param null   $name
+     * @param null $name
      */
-    public function __construct(Config $config, $name = null)
+    public function __construct( Config $config, $name = null )
     {
         $this->cacheDirectory = $this->getCacheDirectory();
         $this->createCacheDirectory();
@@ -60,8 +60,8 @@ class NewCommand extends Command
      */
     protected function getCacheDirectory()
     {
-        return isset($_SERVER['HOME']) ?
-            $_SERVER['HOME'].DIRECTORY_SEPARATOR.'.timber_installer'.DIRECTORY_SEPARATOR :
+        return isset($_SERVER[ 'HOME' ]) ?
+            $_SERVER[ 'HOME' ] . DIRECTORY_SEPARATOR . '.timber_installer' . DIRECTORY_SEPARATOR :
             getcwd();
     }
 
@@ -78,12 +78,11 @@ class NewCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     *
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute( InputInterface $input, OutputInterface $output )
     {
         if (!$this->config->isConfigured()) {
             $output->writeln('<info>Your pine installation is not configured, please complete the interactive setup to configure it.</info>');
@@ -98,7 +97,7 @@ class NewCommand extends Command
         $this->setApp($input->getArgument('name'))->setVersion($input->getArgument('version'));
 
         $this->verifyApplicationDoesNotExists(
-            $directory = ($input->getArgument('name')) ? getcwd().'/'.$input->getArgument('name') : getcwd()
+            $directory = ( $input->getArgument('name') ) ? getcwd() . '/' . $input->getArgument('name') : getcwd()
         );
         $this->setApp($input->getArgument('name'))->setVersion($input->getArgument('version'));
 
@@ -124,14 +123,13 @@ class NewCommand extends Command
 
     /**
      * @param $directory
-     *
      * @return bool
      */
-    protected function verifyApplicationDoesNotExists($directory)
+    protected function verifyApplicationDoesNotExists( $directory )
     {
-        $isEmpty = (count(glob("$directory/*")) === 0) ? true : false;
+        $isEmpty = ( count(glob("$directory/*")) === 0 ) ? true : false;
 
-        if ((is_dir($directory) || is_file($directory)) && $directory != getcwd() && !$isEmpty) {
+        if (( is_dir($directory) || is_file($directory) ) && $directory != getcwd() && !$isEmpty) {
             throw new RuntimeException('Application already exists!');
         }
 
@@ -145,7 +143,7 @@ class NewCommand extends Command
      */
     protected function createApplicationDirectory()
     {
-        $directory = getcwd().'/'.$this->getApp();
+        $directory = getcwd() . '/' . $this->getApp();
 
         if (!is_writable(dirname($directory))) {
             throw new RuntimeException(sprintf('%s is not writable by current user', $directory));
@@ -166,10 +164,9 @@ class NewCommand extends Command
 
     /**
      * @param mixed $app
-     *
      * @return NewCommand
      */
-    public function setApp($app)
+    public function setApp( $app )
     {
         $this->app = $app;
 
@@ -180,10 +177,9 @@ class NewCommand extends Command
      * Download WordPress Zip package.
      *
      * @param OutputInterface $output
-     *
      * @return string
      */
-    public function download($output)
+    public function download( $output )
     {
         $zipFilePath = $this->getZipFilePath();
 
@@ -193,11 +189,11 @@ class NewCommand extends Command
             return $zipFilePath;
         }
 
-        $file = (new Client([
+        $file = ( new Client([
             'verify' => false,
-        ]));
+        ]) );
 
-        $zipFileResource = fopen($zipFilePath, 'w');
+        $zipFileResource  = fopen($zipFilePath, 'w');
         $downloadProgress = new ProgressBar($output);
         $downloadProgress->setFormat('<comment>Downloading WordPress : %downloaded%M of %total_size%M %percent_now%%</comment>');
         $downloadProgress->start();
@@ -209,10 +205,10 @@ class NewCommand extends Command
                 $downloadedBytes,
                 $uploadTotal,
                 $uploadedBytes
-            ) use ($downloadProgress) {
+            ) use ( $downloadProgress ) {
                 $progressValue = 0;
                 if ($downloadedBytes > 0) {
-                    $progressValue = ($downloadedBytes / $downloadTotal) * 100;
+                    $progressValue = ( $downloadedBytes / $downloadTotal ) * 100;
                 }
 
 //                if ($downloadTotal) {
@@ -247,10 +243,10 @@ class NewCommand extends Command
     protected function getZipFilePath()
     {
         if ($version = $this->getVersion()) {
-            return $this->cacheDirectory."wordpress-$version.zip";
+            return $this->cacheDirectory . "wordpress-$version.zip";
         }
 
-        return $this->cacheDirectory.'wordpress.zip';
+        return $this->cacheDirectory . 'wordpress.zip';
     }
 
     /**
@@ -263,10 +259,9 @@ class NewCommand extends Command
 
     /**
      * @param mixed $version
-     *
      * @return NewCommand
      */
-    public function setVersion($version)
+    public function setVersion( $version )
     {
         $this->version = $version;
 
@@ -275,20 +270,19 @@ class NewCommand extends Command
 
     /**
      * @param string $algorithm md5|sha1
-     *
      * @return bool
      */
-    protected function verifyZipIntegrity($algorithm = 'md5')
+    protected function verifyZipIntegrity( $algorithm = 'md5' )
     {
-        $request = new Client([
+        $request        = new Client([
             'verify' => false,
         ]);
-        $response = $request->get($this->getUrl($algorithm));
+        $response       = $request->get($this->getUrl($algorithm));
         $remoteChecksum = $response->getBody();
-        $localChecksum = md5_file($this->getZipFilePath());
-        if ($algorithm == 'md5' && ($remoteChecksum != $localChecksum)) {
+        $localChecksum  = md5_file($this->getZipFilePath());
+        if ($algorithm == 'md5' && ( $remoteChecksum != $localChecksum )) {
             unlink($this->getZipFilePath());
-            echo  "Cannot verify integrity of {$this->getZipFilePath()}.\n We have deleted the file.\n Downloading it again. \n";
+            echo "Cannot verify integrity of {$this->getZipFilePath()}.\n We have deleted the file.\n Downloading it again. \n";
 
             return false;
         }
@@ -300,14 +294,13 @@ class NewCommand extends Command
      * Get WordPress ZIP file URL.
      *
      * @param null $checksum
-     *
      * @return mixed null|md5|sha1
      */
-    protected function getUrl($checksum = null)
+    protected function getUrl( $checksum = null )
     {
-        $url = $this->baseUrl.'/latest.zip';
+        $url = $this->baseUrl . '/latest.zip';
         if ($version = $this->getVersion()) {
-            $url = $this->baseUrl.'/wordpress-'.$version.'.zip';
+            $url = $this->baseUrl . '/wordpress-' . $version . '.zip';
         }
 
         if ($checksum) {
@@ -320,15 +313,15 @@ class NewCommand extends Command
     /**
      * @param $file
      */
-    public function extract($file)
+    public function extract( $file )
     {
-        $projectPath = getcwd().'/'.$this->getApp();
-        $zip = new \ZipArchive();
+        $projectPath = getcwd() . '/' . $this->getApp();
+        $zip         = new \ZipArchive();
         $zip->open($file);
         $zip->extractTo($projectPath);
 
-        $this->move($projectPath.'/wordpress/', $projectPath);
-        $this->delete($projectPath.'/wordpress/');
+        $this->move($projectPath . '/wordpress/', $projectPath);
+        $this->delete($projectPath . '/wordpress/');
     }
 
     /**
@@ -336,10 +329,9 @@ class NewCommand extends Command
      *
      * @param $source
      * @param $destination
-     *
      * @link http://stackoverflow.com/a/27290570/2641971
      */
-    public function move($source, $destination)
+    public function move( $source, $destination )
     {
         $this->fileSystem = new Filesystem();
 
@@ -348,12 +340,12 @@ class NewCommand extends Command
         }
 
         $directoryIterator = new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS);
-        $iterator = new \RecursiveIteratorIterator($directoryIterator, \RecursiveIteratorIterator::SELF_FIRST);
+        $iterator          = new \RecursiveIteratorIterator($directoryIterator, \RecursiveIteratorIterator::SELF_FIRST);
         foreach ($iterator as $item) {
             if ($item->isDir()) {
-                $this->fileSystem->mkdir($destination.DIRECTORY_SEPARATOR.$iterator->getSubPathName());
+                $this->fileSystem->mkdir($destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
             } else {
-                $this->fileSystem->rename($item, $destination.DIRECTORY_SEPARATOR.$iterator->getSubPathName());
+                $this->fileSystem->rename($item, $destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
             }
         }
     }
@@ -362,12 +354,10 @@ class NewCommand extends Command
      * Delete a directory recursively.
      *
      * @param $directory
-     *
      * @return bool
-     *
      * @link http://stackoverflow.com/a/1653776/2641971
      */
-    public function delete($directory)
+    public function delete( $directory )
     {
         if (!file_exists($directory)) {
             return true;
@@ -382,7 +372,7 @@ class NewCommand extends Command
                 continue;
             }
 
-            if (!$this->delete($directory.DIRECTORY_SEPARATOR.$item)) {
+            if (!$this->delete($directory . DIRECTORY_SEPARATOR . $item)) {
                 return false;
             }
         }
