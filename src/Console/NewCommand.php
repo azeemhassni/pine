@@ -183,6 +183,7 @@ class NewCommand extends Command
         $zipFilePath = $this->getZipFilePath();
 
         if (file_exists($zipFilePath) && $this->verifyZipIntegrity()) {
+            $output->writeln("Using WordPress from cache");
             return $zipFilePath;
         }
 
@@ -192,11 +193,7 @@ class NewCommand extends Command
 
         $zipFileResource  = fopen($zipFilePath, 'w');
         $downloadProgress = new ProgressBar($output);
-//        $downloadProgress->setFormatDefinition('custom', '<info>Downloading WordPress: %downloaded%%</info>');
-        // 0.2% of 2.16GiB at 423.73KiB/s ETA 01:28:56^C
-//        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
         $downloadProgress->setFormat('<comment>Downloading WordPress : %downloaded%M of %total_size%M %percent_now%%</comment>');
-//        $downloadProgress->setFormat('<question>%bar%</question>');
         $downloadProgress->start();
 
         $file->request('GET', $this->getUrl(), [
@@ -393,9 +390,9 @@ class NewCommand extends Command
             ->addArgument('name', InputArgument::REQUIRED, 'Your applications\'s name')
             ->addArgument('version', InputArgument::OPTIONAL, 'The version of WordPress to download [optional]')
             ->addOption('url', null, InputOption::VALUE_OPTIONAL, 'Site URL [optional]')
-            ->addOption('prefix', null, InputOption::VALUE_OPTIONAL, 'Database table prefix [optional]')
-            ->addOption('db', null, InputOption::VALUE_OPTIONAL, 'Database name [optional]')
-            ->addOption('title', null, InputOption::VALUE_OPTIONAL, 'Application title [optional]')
+            ->addOption('prefix', null, InputOption::VALUE_OPTIONAL, 'Database table prefix [optional]', null)
+            ->addOption('db', null, InputOption::VALUE_OPTIONAL, 'Database name [optional]', null)
+            ->addOption('title', null, InputOption::VALUE_OPTIONAL, 'Application title [optional]', null)
             ->addOption('npm', null, InputOption::VALUE_NONE, 'Pass this option if you want to install npm packages')
             ->addOption('skip-install', 's', InputOption::VALUE_NONE, 'Skip wordpress installation');
     }

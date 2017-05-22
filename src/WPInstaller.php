@@ -137,12 +137,12 @@ class WPInstaller
     protected function configure()
     {
         $this->WPCli->config([
-            'dbname'   => $this->input->hasOption('db') ? $this->input->getOption('db') : $this->input->getArgument('name'),
+            'dbname'   => $this->input->getOption('db') ?: $this->input->getArgument('name'),
             'dbuser'   => $this->config->get('username'),
             'dbpass'   => $this->config->get('password'),
             'dbhost'   => $this->config->get('host'),
             'path'     => $this->input->getArgument('name'),
-            'dbprefix' => $this->input->hasOption('prefix') ? $this->input->getOption('prefix') : $this->input->getArgument('name') . '_'
+            'dbprefix' => $this->input->getOption('prefix') ?: $this->input->getArgument('name') . '_'
         ]);
 
         return $this;
