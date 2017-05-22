@@ -109,7 +109,7 @@ class WPCli
         $args = $this->parseArgs([
             'url'            => 'localhost/' . $this->input->getArgument('name'),
             'title'          => 'Just another WordPress site',
-            'admin_user'     => '',
+            'admin_user'     => 'admin',
             'admin_password' => null,
             'admin_email'    => '',
             'skip-email'     => false,
