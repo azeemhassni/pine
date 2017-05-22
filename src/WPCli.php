@@ -35,7 +35,14 @@ class WPCli
         $this->input  = $input;
         $this->output = $output;
 
+        // try from local vendor/bin
         $this->wp = dirname(__DIR__) . '/vendor/bin/wp';
+
+        if (!file_exists($this->wp)) {
+            // load it from global vendor/bin (../../../bin/wp )
+            $this->wp = dirname(dirname(dirname(__DIR__))) . '/bin/wp';
+        }
+
     }
 
     /**
