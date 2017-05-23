@@ -32,7 +32,7 @@ class WPCli
      */
     public function __construct(InputInterface $input, OutputInterface $output)
     {
-        $this->input  = $input;
+        $this->input = $input;
         $this->output = $output;
 
         // try from local vendor/bin
@@ -42,6 +42,9 @@ class WPCli
             // load it from global vendor/bin (../../../bin/wp )
             $this->wp = dirname(dirname(dirname(__DIR__))) . '/bin/wp';
         }
+
+        // make it cross-platform
+        $this->wp = str_replace("/", DIRECTORY_SEPARATOR, $this->wp);
 
     }
 
@@ -53,10 +56,10 @@ class WPCli
     public function config($args = [])
     {
         $args = $this->parseArgs([
-            'dbname'   => '',
-            'dbhost'   => '',
-            'dbuser'   => '',
-            'dbpass'   => '',
+            'dbname' => '',
+            'dbhost' => '',
+            'dbuser' => '',
+            'dbpass' => '',
             'dbprefix' => 'wp_',
         ], $args);
 
@@ -72,7 +75,7 @@ class WPCli
     {
         foreach ($args as $key => $value) {
             if (!empty($value)) {
-                $defaults[ $key ] = $value;
+                $defaults[$key] = $value;
             }
         }
 
@@ -88,21 +91,25 @@ class WPCli
      */
     public function execute($command, $args = [])
     {
-        $command = "$this->wp $command ";
+        $command = sprintf('"%s" %s', $this->wp, $command);
+
         foreach ($args as $arg => $value) {
             if (substr($arg, 0, strlen('prompt=')) == 'prompt=') {
-                $command .= "--$arg ";
+                $command .= " --$arg ";
                 continue;
             }
 
-            $command .= "--$arg='$value' ";
+            $command .= " --$arg=\"$value\"";
         }
 
         $process = new Process($command);
         if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
             $process->setTty(true);
         }
-        $process->run();
+
+        $process->run(function ($type, $line) {
+            $this->output->writeln($line);
+        });
 
         return $process;
     }
@@ -116,13 +123,13 @@ class WPCli
     public function install($args)
     {
         $args = $this->parseArgs([
-            'url'            => 'localhost/' . $this->input->getArgument('name'),
-            'title'          => 'Just another WordPress site',
-            'admin_user'     => 'admin',
+            'url' => 'localhost/' . $this->input->getArgument('name'),
+            'title' => 'Just another WordPress site',
+            'admin_user' => 'admin',
             'admin_password' => null,
-            'admin_email'    => '',
-            'skip-email'     => false,
-            'path'           => '',
+            'admin_email' => '',
+            'skip-email' => false,
+            'path' => '',
         ], $args);
 
         return $this->execute('core install', $args);

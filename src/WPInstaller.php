@@ -59,11 +59,12 @@ class WPInstaller
         InputInterface $input,
         OutputInterface $output,
         WPCli $WPCli
-    ) {
-        $this->config  = $config;
-        $this->input   = $input;
-        $this->output  = $output;
-        $this->WPCli   = $WPCli;
+    )
+    {
+        $this->config = $config;
+        $this->input = $input;
+        $this->output = $output;
+        $this->WPCli = $WPCli;
         $this->command = $command;
     }
 
@@ -109,22 +110,22 @@ class WPInstaller
     protected function run()
     {
         $args = [
-            'url'         => $this->input->getOption('url'),
-            'title'       => $this->input->getOption('title'),
-            'admin_user'  => $this->config->get('wp_username'),
+            'url' => $this->input->getOption('url'),
+            'title' => $this->input->getOption('title'),
+            'admin_user' => $this->config->get('wp_username'),
             'admin_email' => $this->config->get('email'),
-            'skip-email'  => true,
-            'path'        => $this->input->getArgument('name'),
+            'skip-email' => true,
+            'path' => realpath($this->input->getArgument('name')),
         ];
 
         $this->output->writeln("<comment>Installing WordPress, you'll be asked for admin password which is optional if not provided we'll generate one for you.<comment>");
 
         // ask for admin password and feed it to wp-cli
-        $helper   = $this->command->getHelper('question');
+        $helper = $this->command->getHelper('question');
         $question = new Question('<info>Please enter new password for WordPress admin panel : </info>', null);
         $question->setHidden(true);
         $question->setHiddenFallback(false);
-        $args[ 'admin_password' ] = $helper->ask($this->input, $this->output, $question);
+        $args['admin_password'] = $helper->ask($this->input, $this->output, $question);
 
         $this->WPCli->install($args);
 
@@ -139,11 +140,11 @@ class WPInstaller
     protected function configure()
     {
         $this->WPCli->config([
-            'dbname'   => $this->input->getOption('db') ?: $this->input->getArgument('name'),
-            'dbuser'   => $this->config->get('username'),
-            'dbpass'   => $this->config->get('password'),
-            'dbhost'   => $this->config->get('host'),
-            'path'     => $this->input->getArgument('name'),
+            'dbname' => $this->input->getOption('db') ?: $this->input->getArgument('name'),
+            'dbuser' => $this->config->get('username'),
+            'dbpass' => $this->config->get('password'),
+            'dbhost' => $this->config->get('host'),
+            'path' => realpath($this->input->getArgument('name')),
             'dbprefix' => $this->input->getOption('prefix') ?: $this->input->getArgument('name') . '_',
         ]);
 
@@ -178,7 +179,7 @@ class WPInstaller
      */
     protected function connect()
     {
-        $host     = $this->config->get('host');
+        $host = $this->config->get('host');
         $username = $this->config->get('username');
         $password = $this->config->get('password');
 
