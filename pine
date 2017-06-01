@@ -7,7 +7,7 @@ use Pine\Console\NewCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Yaml\Yaml;
 
-define('VERSION', '2.3');
+define('VERSION', '2.3.4');
 define('CONFIG_PATH', $_SERVER[ 'HOME' ] . DIRECTORY_SEPARATOR . "pine.yaml");
 
 if (file_exists(__DIR__ . '/../../autoload.php')) {
