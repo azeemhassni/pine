@@ -21,12 +21,12 @@
   },
   "require": {
     "ext-zip": "*",
-    "symfony/console": "^2.7",
+    "symfony/console": "^3.2",
     "guzzlehttp/guzzle": "^6.2",
-    "symfony/process": "^2.7",
-    "symfony/filesystem": "^2.7",
-    "symfony/yaml": "^2.7",
-    "wp-cli/wp-cli": "^1.1"
+    "symfony/process": "^3.2",
+    "symfony/filesystem": "^3.2",
+    "symfony/yaml": "^3.2",
+    "wp-cli/wp-cli": "^1.2"
   },
   "bin": [
     "pine"
