@@ -1,5 +1,5 @@
+![Pine Github cover image](https://user-images.githubusercontent.com/6503258/127897467-8f4fa813-38b4-4512-9d02-f644e3e852d0.jpeg)
 
-![Pine Github cover image](https://s18.postimg.cc/xpextxkm1/pine-cover-centered.png)
 
 # pine - A CLI installer for timber
 A CLI tool written in PHP based on symfony console to easily create a WordPress (Timber) project.
