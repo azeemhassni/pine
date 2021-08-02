@@ -27,7 +27,7 @@
     "symfony/process": ">=3.2",
     "symfony/filesystem": ">=3.2",
     "symfony/yaml": ">=3.2",
-    "wp-cli/wp-cli": "^1.2"
+    "wp-cli/wp-cli": ">=1.2"
   },
   "bin": [
     "pine"
